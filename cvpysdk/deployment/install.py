@@ -348,6 +348,7 @@ class Install(object):
             password=None,
             install_path=None,
             log_file_loc=None,
+            ssh_key_file_loc=None,
             client_group_name=None,
             storage_policy_name=None,
             sw_cache_client=None,
@@ -383,6 +384,10 @@ class Install(object):
 
             log_file_loc (str)              -- Install to a specified log path on the client
 
+                 default : None
+            
+            ssh_key_file_loc (str)          -- File path on the server of the private ssh key use for the installation
+            
                  default : None
 
             client_group_name (list)        -- List of client groups for the client
@@ -431,6 +436,7 @@ class Install(object):
                                 password='password',
                                 install_path='C:\\Temp,
                                 log_file_loc='/var/log',
+                                ssh_key_file_loc='D:\\sshKey\\key.ppk',
                                 client_group_name=[My_Servers],
                                 storage_policy_name='My_Storage_Policy',
                                 install_flags={"preferredIPFamily":2})
@@ -567,9 +573,14 @@ class Install(object):
                                     },
                                     "clientDetails": client_details,
                                     "clientAuthForJob": {
-                                        "password": password,
+                                        "password": "" if ssh_key_file_loc else password,
                                         "userName": username
-                                    }
+                                    },
+                                    "reuseADCredentials": False,
+                                    "useSSHKey": True if ssh_key_file_loc else False,
+                                    "sshKeyFileLocation": ssh_key_file_loc if ssh_key_file_loc else "",
+                                    "useSSHKeyPassphrase": False,
+                                    "useSSHNCPortNumber": False
                                 },
                                 "updateOption": {
                                     "rebootClient": True
